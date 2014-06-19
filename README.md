@@ -1,4 +1,4 @@
 TravisKit
 =========
 
-Travis CI API Wrapper for Objective-C
+Unofficial Travis CI API Wrapper for Objective-C.
