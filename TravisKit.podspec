@@ -10,5 +10,15 @@ Pod::Spec.new do |s|
   s.source_files = "TravisKit/*.{h,m}"
   s.frameworks   = 'Foundation', 'UIKit', 'CoreGraphics'
   s.requires_arc = true
-  s.dependencies = ['AFNetworking', 'JSONModel', 'libPusher' ]
+  s.dependencies = ['AFNetworking', 'JSONModel']
+  
+  s.subspec 'Base' do |ss|
+    ss.source_files = "TravisKit/*.{h,m}"
+    ss.dependencies = ['AFNetworking', 'JSONModel']
+  end
+  
+  s.subspec 'Log' do |ss|
+    ss.source_files = "Log/*.{h,m}"
+    ss.dependencies = ['libPusher']
+  end
 end
