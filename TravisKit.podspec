@@ -7,18 +7,22 @@ Pod::Spec.new do |s|
   s.authors      = { "Dal Rupnik" => "legoless@gmail.com" }
   s.source       = { :git => "https://github.com/legoless/TravisKit.git", :tag => "v#{s.version}" }
   s.platform     = :ios, '7.0'
-  s.source_files = "TravisKit/*.{h,m}"
   s.frameworks   = 'Foundation', 'UIKit', 'CoreGraphics'
   s.requires_arc = true
-  s.dependencies = ['AFNetworking', 'JSONModel']
   
-  s.subspec 'Base' do |ss|
-    ss.source_files = "TravisKit/*.{h,m}"
+  s.subspec 'GitHub' do |ss|
+    ss.source_files = "TravisKit/GitHub/*.{h,m}"
     ss.dependencies = ['AFNetworking', 'JSONModel']
   end
   
   s.subspec 'Log' do |ss|
-    ss.source_files = "Log/*.{h,m}"
+    ss.source_files = "TravisKit/Log/*.{h,m}"
     ss.dependencies = ['libPusher']
   end
+  
+  s.subspec 'Model' do |ss|
+    ss.source_files = "TravisKit/Model/*.{h,m}"
+    ss.dependencies = ['AFNetworking', 'JSONModel']
+  end
+
 end

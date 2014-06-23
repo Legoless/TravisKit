@@ -7,8 +7,8 @@
 //  Copyright (c) 2014 arvystate.net. All rights reserved.
 //
 
-#ifndef TKDefines_Header_h
-#define TKDefines_Header_h
+#ifndef TKDefines
+#define TKDefines
 
 typedef enum : NSUInteger
 {

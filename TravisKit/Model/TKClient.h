@@ -6,13 +6,22 @@
 //  Copyright (c) 2014 arvystate.net. All rights reserved.
 //
 
+#import "TKAccount.h"
+#import "TKAnnotation.h"
+#import "TKBranch.h"
+#import "TKBroadcast.h"
+#import "TKBuild.h"
 #import "TKBuildPayload.h"
+#import "TKCache.h"
+#import "TKConfig.h"
 #import "TKLog.h"
 #import "TKPermissions.h"
 #import "TKRepository.h"
 #import "TKDefines.h"
 #import "TKRequest.h"
 #import "TKUser.h"
+#import "TKRepositoryKey.h"
+#import "TKHook.h"
 #import "TKSettings.h"
 
 extern NSString* const TKOpenSourceServer;
@@ -21,6 +30,8 @@ extern NSString* const TKPrivateServer;
 @interface TKClient : NSObject
 
 @property (nonatomic, readonly) BOOL isAuthenticated;
+
++ (instancetype)clientWithServer:(NSString *)server;
 
 //
 // Initialize
@@ -41,6 +52,13 @@ extern NSString* const TKPrivateServer;
 - (void)accountsWithSuccess:(void (^)(NSArray* accounts))success failure:(void (^)(NSError* error))failure;
 
 - (void)accountsWithAdmin:(BOOL)admin success:(void (^)(NSArray* accounts))success failure:(void (^)(NSError* error))failure;
+
+//
+// Annotations (experimental)
+//
+
+- (void)annotationsWithJobId:(NSInteger)jobId success:(void (^)(NSArray* annotations))success failure:(void (^)(NSError* error))failure;
+- (void)createAnnotation:(TKAnnotation *)annotation withJobId:(NSInteger)jobId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
 // Builds
@@ -76,8 +94,17 @@ extern NSString* const TKPrivateServer;
 - (void)deleteCachesWithSlug:(NSString *)slug branch:(NSString *)branch match:(NSString *)match success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
+// Config
+//
+
+- (void)configWithSuccess:(void (^)(TKConfig * config))success failure:(void (^)(NSError* error))failure;
+
+//
 // Hooks
 //
+
+- (void)hooksWithSuccess:(void (^)(NSArray* hooks))success failure:(void (^)(NSError* error))failure;
+- (void)updateHook:(TKHook* *)hook success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
 // Jobs
@@ -93,7 +120,6 @@ extern NSString* const TKPrivateServer;
 
 - (void)logWithJobId:(NSInteger)jobId success:(void (^)(NSString* log))success failure:(void (^)(NSError* error))failure;
 - (void)logWithId:(NSInteger)logId success:(void (^)(TKLog* log))success failure:(void (^)(NSError* error))failure;
-//- (void)subscribeToLogWithId:(NSInteger)jobId;
 
 //
 // Permissions
@@ -111,6 +137,15 @@ extern NSString* const TKPrivateServer;
 - (void)repositoryWithId:(NSInteger)repositoryId success:(void (^)(TKRepository* repository))success failure:(void (^)(NSError* error))failure;
 - (void)repositoryWithSlug:(NSString *)slug success:(void (^)(TKRepository* repository))success failure:(void (^)(NSError* error))failure;
 
+//
+// Repository keys
+//
+
+- (void)repositoryKeyWithId:(NSInteger)repositoryId success:(void (^)(TKRepositoryKey* repositoryKey))success failure:(void (^)(NSError* error))failure;
+- (void)repositoryKeyWithSlug:(NSString *)slug success:(void (^)(TKRepositoryKey* repositoryKey))success failure:(void (^)(NSError* error))failure;
+
+- (void)invalidateRepositoryKeyWithId:(NSInteger)repositoryId success:(void (^)())success failure:(void (^)(NSError* error))failure;
+- (void)invalidateRepositoryKeyWithSlug:(NSString *)slug success:(void (^)())success failure:(void (^)(NSError* error))failure;
 //
 // Requests
 //
@@ -137,5 +172,12 @@ extern NSString* const TKPrivateServer;
 - (void)usersWithSuccess:(void (^)(NSArray* users))success failure:(void (^)(NSError* error))failure;
 - (void)userWithId:(NSInteger)userId success:(void (^)(TKUser* user))success failure:(void (^)(NSError* error))failure;
 - (void)userTriggerSyncWithSuccess:(void (^)())success failure:(void (^)(NSError* error))failure;
+
+@end
+
+/*!
+ * Wraps methods above with objects
+ */
+@interface TKClient (TravisObjects)
 
 @end
