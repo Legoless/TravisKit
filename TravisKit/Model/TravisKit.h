@@ -22,6 +22,7 @@
     #import "TKJob.h"
     #import "TKRepository.h"
     #import "TKRequest.h"
+    #import "TKRequestPayload.h"
     #import "TKPermissions.h"
     #import "TKSettings.h"
     #import "TKUser.h"

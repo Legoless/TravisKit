@@ -5,6 +5,7 @@
 //  Created by Dal Rupnik on 17/06/14.
 //  Copyright (c) 2014 arvystate.net. All rights reserved.
 //
+#import "TKDefines.h"
 
 #import "TKAccount.h"
 #import "TKAnnotation.h"
@@ -17,8 +18,8 @@
 #import "TKLog.h"
 #import "TKPermissions.h"
 #import "TKRepository.h"
-#import "TKDefines.h"
 #import "TKRequest.h"
+#import "TKRequestPayload.h"
 #import "TKUser.h"
 #import "TKRepositoryKey.h"
 #import "TKHook.h"
@@ -61,16 +62,29 @@ extern NSString* const TKPrivateServer;
 - (void)createAnnotation:(TKAnnotation *)annotation withJobId:(NSInteger)jobId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
+// Branches
+//
+
+- (void)branchesWithRepositoryId:(NSInteger)repositoryId success:(void (^)(NSArray* branches))success failure:(void (^)(NSError* error))failure;
+- (void)branchesWithSlug:(NSString *)slug success:(void (^)(NSArray* branches))success failure:(void (^)(NSError* error))failure;
+
+//
+// Broadcasts
+//
+
+- (void)broadcastsWithSuccess:(void (^)(NSArray* broadcasts))success failure:(void (^)(NSError* error))failure;
+
+//
 // Builds
 //
 - (void)buildsWithIds:(NSArray *)ids success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 - (void)buildsWithIds:(NSArray *)ids eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
 - (void)buildsWithRepositoryId:(NSInteger)repositoryId success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
-- (void)buildsWithRepositoryId:(NSInteger)repositoryId buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
+- (void)buildsWithRepositoryId:(NSInteger)repositoryId buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
 - (void)buildsWithSlug:(NSString *)slug success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
-- (void)buildsWithSlug:(NSString *)slug buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
+- (void)buildsWithSlug:(NSString *)slug buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
 - (void)buildWithId:(NSInteger)buildId success:(void (^)(TKBuild* build))success failure:(void (^)(NSError* error))failure;
 
@@ -104,11 +118,15 @@ extern NSString* const TKPrivateServer;
 //
 
 - (void)hooksWithSuccess:(void (^)(NSArray* hooks))success failure:(void (^)(NSError* error))failure;
-- (void)updateHook:(TKHook* *)hook success:(void (^)())success failure:(void (^)(NSError* error))failure;
+- (void)updateHook:(TKHook *)hook success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
 // Jobs
 //
+
+- (void)jobsWithIds:(NSArray *)ids success:(void (^)(NSArray* jobs))success failure:(void (^)(NSError* error))failure;
+- (void)jobsWithState:(NSString *)state success:(void (^)(NSArray* jobs))success failure:(void (^)(NSError* error))failure;
+- (void)jobsWithQueue:(NSString *)queue success:(void (^)(NSArray* jobs))success failure:(void (^)(NSError* error))failure;
 
 - (void)jobWithId:(NSInteger)jobId success:(void (^)(TKJob* job))success failure:(void (^)(NSError* error))failure;
 - (void)cancelJobWithId:(NSInteger)jobId success:(void (^)())success failure:(void (^)(NSError* error))failure;
@@ -118,7 +136,6 @@ extern NSString* const TKPrivateServer;
 // Logs
 //
 
-- (void)logWithJobId:(NSInteger)jobId success:(void (^)(NSString* log))success failure:(void (^)(NSError* error))failure;
 - (void)logWithId:(NSInteger)logId success:(void (^)(TKLog* log))success failure:(void (^)(NSError* error))failure;
 
 //
@@ -151,19 +168,19 @@ extern NSString* const TKPrivateServer;
 //
 
 - (void)requestsWithRepositoryId:(NSInteger)repositoryId success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
-- (void)requestsWithRepositoryId:(NSInteger)repositoryId limit:(NSInteger)limit olderThan:(NSDate *)olderThan success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
+- (void)requestsWithRepositoryId:(NSInteger)repositoryId limit:(NSInteger)limit olderThan:(NSInteger)olderThanId success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
 
 - (void)requestsWithSlug:(NSString *)slug success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
-- (void)requestsWithSlug:(NSString *)slug limit:(NSInteger)limit olderThan:(NSDate *)olderThan success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
+- (void)requestsWithSlug:(NSString *)slug limit:(NSInteger)limit olderThan:(NSInteger)olderThanId success:(void (^)(NSArray* requests))success failure:(void (^)(NSError* error))failure;
 
-- (void)requestWithId:(NSInteger)requestId success:(void (^)(TKRequest* request))success failure:(void (^)(NSError* error))failure;
+- (void)requestWithId:(NSInteger)requestId success:(void (^)(TKRequestPayload* requestPayload))success failure:(void (^)(NSError* error))failure;
 
 //
 // Settings
 //
 
 - (void)settingsForRepositoryId:(NSInteger)repositoryId success:(void (^)(TKSettings* settings))success failure:(void (^)(NSError* error))failure;
-- (void)updateSettingsForRepositoryId:(NSInteger)repositoryId settings:(TKSettings *)settings success:(void (^)())success failure:(void (^)(NSError* error))failure;
+- (void)updateSettings:(TKSettings *)settings forRepositoryId:(NSInteger)repositoryId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
 // Users

@@ -10,4 +10,7 @@
 
 @interface TKBroadcast : JSONModel
 
+@property (nonatomic) NSInteger id;
+@property (nonatomic, strong) NSString* message;
+
 @end
