@@ -1,7 +1,7 @@
 TravisKit
 =========
 
-Unofficial Travis CI API Wrapper for Objective-C.
+Unofficial native [Travis CI](http://travis-ci.org) API Wrapper for iOS / OS X.
 
 # Authentication
 
