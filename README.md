@@ -11,6 +11,8 @@ Travis CI uses authentication tokens from GitHub, which can be obtained with:
 - AuthKit
 - ...
 
+Or a personal access token can be generated on user's specific page.
+
 Contact
 ======
 
