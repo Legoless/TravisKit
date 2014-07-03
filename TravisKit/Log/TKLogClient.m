@@ -139,6 +139,7 @@
     [self unsubscribeJobId:job.id];
 }
 
+@end
+
 #endif
 
-@end

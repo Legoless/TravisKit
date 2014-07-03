@@ -6,6 +6,6 @@
 
 @interface TKRepositoryKey : JSONModel
 
-@property (nonatomic, strong) NSString* public_key;
+@property (nonatomic, strong) NSString* key;
 
 @end

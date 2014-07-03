@@ -14,8 +14,8 @@
 
 @interface TKBuildPayload : JSONModel
 
-@property (nonatomic, strong) NSArray<TKBuild>* builds;
-@property (nonatomic, strong) NSArray<TKJob>* jobs;
-@property (nonatomic, strong) NSArray<TKCommit>* commits;
+@property (nonatomic, strong) NSArray<TKBuild, Optional>* builds;
+@property (nonatomic, strong) NSArray<TKJob, Optional>* jobs;
+@property (nonatomic, strong) NSArray<TKCommit, Optional>* commits;
 
 @end

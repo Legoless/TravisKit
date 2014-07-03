@@ -27,16 +27,12 @@ PODS:
     - SocketRocket (= 0.3.1-beta2)
   - SocketRocket (0.3.1-beta2)
   - TravisKit (1.0.0):
-    - TravisKit/GitHub
     - TravisKit/Log
     - TravisKit/Model
-  - TravisKit/GitHub (1.0.0):
-    - AFNetworking
-    - JSONModel
   - TravisKit/Log (1.0.0):
     - libPusher
   - TravisKit/Model (1.0.0):
-    - AFNetworking
+    - AFNetworking (~> 2.0)
     - JSONModel
 
 DEPENDENCIES:
@@ -51,6 +47,6 @@ SPEC CHECKSUMS:
   JSONModel: 62ea96b49ea18a8b91ef89c249dba291d8601d82
   libPusher: 583326327a72ab7cd0f38692f61f9061cf4be3d9
   SocketRocket: 79a68ae186063c65e1fe6f638b1ae2927aa5f304
-  TravisKit: 536c816b4848d26070bc24cc4ffad5c4dd1bb1f4
+  TravisKit: 8a85835b3b96b6753f7ed2b965f9a8439383936a
 
 COCOAPODS: 0.33.1

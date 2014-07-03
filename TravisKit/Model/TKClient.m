@@ -6,16 +6,14 @@
 //  Copyright (c) 2014 arvystate.net. All rights reserved.
 //
 
-extern NSString* const TKOpenSourceServer = @"http://api.travis-ci.org/";
-extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
+NSString* const TKOpenSourceServer = @"https://api.travis-ci.org/";
+NSString* const TKPrivateServer = @"https://api.travis-ci.com/";
 
 #import <AFNetworking/AFNetworking.h>
 
 #import "TKClient.h"
 
 @interface TKClient ()
-
-@property (nonatomic, strong) NSString* accessToken;
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager* manager;
 
@@ -338,7 +336,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
         parameters[@"event_type"] = @"pull_request";
     }
 
-    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/builds", repositoryId] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/builds", (long)repositoryId] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
 
@@ -498,7 +496,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
         parameters[@"match"] = match;
     }
 
-    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/caches", repositoryId] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/caches", (long)repositoryId] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
 
@@ -643,7 +641,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
     {
         NSError* error;
 
-        id object = [[TKConfig alloc] initWithDictionary:responseObject error:&error];
+        id object = [[TKConfig alloc] initWithDictionary:responseObject[@"config"] error:&error];
 
         if (!error && success)
         {
@@ -665,13 +663,20 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 #pragma mark Hooks
 
+
 - (void)hooksWithSuccess:(void (^)(NSArray* hooks))success failure:(void (^)(NSError* error))failure
 {
     [self.manager GET:@"hooks" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
-
-        NSArray* objects = [TKHook arrayOfModelsFromDictionaries:responseObject[@"hooks"] error:&error];
+        
+        //
+        // Fix array with hooks
+        //
+        
+        NSArray* hooks = [self hooksFixActiveInArray:responseObject[@"hooks"]];
+        
+        NSArray* objects = [TKHook arrayOfModelsFromDictionaries:hooks error:&error];
 
         if (!error && success)
         {
@@ -690,6 +695,38 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
         }
     }];
 }
+
+/**
+ *  Method returns a new array of uninitialized hooks that fixes issue when API 
+ *  returns "<null>" string instead of a BOOL value for "active" field.
+ *
+ *  @param hooks property list of hooks
+ *
+ *  @return array of hooks with active value fixed
+ */
+- (NSArray *)hooksFixActiveInArray:(NSArray *)hooks
+{
+    NSMutableArray* hooksArray = [NSMutableArray array];
+    
+    for (NSDictionary* hook in hooks)
+    {
+        NSMutableDictionary* hookFix = [hook mutableCopy];
+        
+        if ([hookFix[@"active"] isKindOfClass:[NSNull class]])
+        {
+            hookFix[@"active"] = @NO;
+        }
+        else
+        {
+            hookFix[@"active"] = @YES;
+        }
+        
+        [hooksArray addObject:hookFix];
+    }
+
+    return [hooksArray copy];
+}
+
 
 - (void)updateHook:(TKHook *)hook success:(void (^)())success failure:(void (^)(NSError* error))failure
 {
@@ -881,7 +918,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 #pragma mark Permissions
 
-- (void)permissionsWithSuccess:(void (^)(TKPermissions* log))success failure:(void (^)(NSError* error))failure
+- (void)permissionsWithSuccess:(void (^)(TKPermissions* permissions))success failure:(void (^)(NSError* error))failure
 {
     [self.manager GET:@"users/permissions" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
@@ -908,6 +945,32 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 }
 
 #pragma mark Repositories
+
+- (void)recentRepositoriesWithSuccess:(void (^)(NSArray* repositories))success failure:(void (^)(NSError* error))failure
+{
+    [self.manager GET:@"repos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        NSError* error;
+
+        NSArray* objects = [TKRepository arrayOfModelsFromDictionaries:responseObject[@"repos"] error:&error];
+
+        if (!error && success)
+        {
+            success(objects);
+        }
+        else if (error && failure)
+        {
+            failure(error);
+        }
+    }
+    failure:^(AFHTTPRequestOperation *operation, NSError *error)
+    {
+        if (failure)
+        {
+            failure(error);
+        }
+    }];
+}
 
 - (void)repositoriesWithIds:(NSArray *)ids success:(void (^)(NSArray* repositories))success failure:(void (^)(NSError* error))failure
 {
@@ -1224,7 +1287,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 - (void)requestWithId:(NSInteger)requestId success:(void (^)(TKRequestPayload* requestPayload))success failure:(void (^)(NSError* error))failure
 {
-    [self.manager GET:[NSString stringWithFormat:@"requests/%ld", requestId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager GET:[NSString stringWithFormat:@"requests/%ld", (long)requestId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
 
@@ -1252,11 +1315,11 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 - (void)settingsForRepositoryId:(NSInteger)repositoryId success:(void (^)(TKSettings* settings))success failure:(void (^)(NSError* error))failure
 {
-    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/settings", repositoryId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager GET:[NSString stringWithFormat:@"repos/%ld/settings", (long)repositoryId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
 
-        id object = [[TKSettings alloc] initWithDictionary:responseObject error:&error];
+        id object = [[TKSettings alloc] initWithDictionary:responseObject[@"settings"] error:&error];
 
         if (!error && success)
         {
@@ -1278,7 +1341,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 - (void)updateSettings:(TKSettings *)settings forRepositoryId:(NSInteger)repositoryId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 {
-    [self.manager PATCH:[NSString stringWithFormat:@"repos/%ld/settings", repositoryId] parameters:@{ @"settings" : [settings toDictionary] } success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager PATCH:[NSString stringWithFormat:@"repos/%ld/settings", (long)repositoryId] parameters:@{ @"settings" : [settings toDictionary] } success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (success)
         {
@@ -1324,7 +1387,7 @@ extern NSString* const TKPrivateServer = @"http://api.travis-ci.com/";
 
 - (void)userWithId:(NSInteger)userId success:(void (^)(TKUser* user))success failure:(void (^)(NSError* error))failure
 {
-    [self.manager GET:[NSString stringWithFormat:@"users/%ld", userId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+    [self.manager GET:[NSString stringWithFormat:@"users/%ld", (long)userId] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSError* error;
 

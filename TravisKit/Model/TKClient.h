@@ -30,6 +30,8 @@ extern NSString* const TKPrivateServer;
 
 @interface TKClient : NSObject
 
+@property (nonatomic, strong) NSString* accessToken;
+
 @property (nonatomic, readonly) BOOL isAuthenticated;
 
 + (instancetype)clientWithServer:(NSString *)server;
@@ -142,11 +144,13 @@ extern NSString* const TKPrivateServer;
 // Permissions
 //
 
-- (void)permissionsWithSuccess:(void (^)(TKPermissions* log))success failure:(void (^)(NSError* error))failure;
+- (void)permissionsWithSuccess:(void (^)(TKPermissions* permissions))success failure:(void (^)(NSError* error))failure;
 
 //
 // Repositories
 //
+
+- (void)recentRepositoriesWithSuccess:(void (^)(NSArray* repositories))success failure:(void (^)(NSError* error))failure;
 
 - (void)repositoriesWithIds:(NSArray *)ids success:(void (^)(NSArray* repositories))success failure:(void (^)(NSError* error))failure;
 - (void)searchRepositoriesByTerm:(NSString *)term member:(NSString *)member ownerName:(NSString *)ownerName slug:(NSString *)slug active:(BOOL)active success:(void (^)(NSArray* repositories))success failure:(void (^)(NSError* error))failure;
@@ -163,6 +167,7 @@ extern NSString* const TKPrivateServer;
 
 - (void)invalidateRepositoryKeyWithId:(NSInteger)repositoryId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 - (void)invalidateRepositoryKeyWithSlug:(NSString *)slug success:(void (^)())success failure:(void (^)(NSError* error))failure;
+
 //
 // Requests
 //
