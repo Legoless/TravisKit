@@ -1,7 +1,7 @@
 TravisKit
 =========
 
-Unofficial native [Travis CI](http://travis-ci.org) API Wrapper for iOS / OS X.
+Full unofficial native [Travis CI](http://travis-ci.org) API Wrapper for iOS / OS X based on AFNetworking 2.x and JSONModel mapping.
 
 # Authentication
 
@@ -12,6 +12,11 @@ Travis CI uses authentication tokens from GitHub, which can be obtained with:
 - ...
 
 Or a personal access token can be generated on user's specific page.
+
+Usage
+======
+
+The easiest way to setup TravisKit is with CocoaPods.
 
 Contact
 ======
