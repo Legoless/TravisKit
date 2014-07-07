@@ -17,11 +17,11 @@ Alternatively, you can drag & drop the `TravisKit` folder into your project. Not
 
 Travis CI uses authentication tokens from GitHub, which can be obtained with:
 
-- OctoKit
-- AuthKit
+- [OctoKit](https://github.com/octokit/octokit.objc)
+- [AuthKit](https://github.com/Legoless/AuthKit)
 - ...
 
-Or a personal access token can be generated on user's specific page.
+Or a personal access token can be generated on user's specific page. Note that OctoKit uses AFNetworking 1.x, which is incompatible with TravisKit.
 
 # Usage
 
