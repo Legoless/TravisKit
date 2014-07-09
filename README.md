@@ -1,7 +1,7 @@
 TravisKit
 =========
 
-Full unofficial native [Travis CI](http://travis-ci.org) API Wrapper for iOS / OS X based on AFNetworking 2.x and JSONModel mapping.
+Full unofficial native block based [Travis CI](http://travis-ci.org) API Wrapper for iOS / OS X based on [AFNetworking](https://github.com/AFNetworking/AFNetworking) 2.x and [JSONModel](https://github.com/icanzilb/JSONModel) mapping.
 
 # Installation
 The easiest way to setup TravisKit is with CocoaPods.
@@ -34,7 +34,19 @@ TKClient* client = [[TKClient alloc] initWithServer:TKOpenSourceServer];
 [client authenticateWithGitHubToken:@"<GITHUB_TOKEN>" success:nil failure:nil;
 ```
 
-See Demo project for example calls.
+After our client is authenticated, we can create requests for specific data:
+```
+[client recentRepositoriesWithSuccess:^(NSArray* repositories)
+{
+    // Do something with repositories here
+}
+failure:^(NSError* error)
+{
+    // Handle error
+}];
+```
+
+See Demo project for more example calls and check out the header file for expressive documentation. [Travis CI API documentation](http://docs.travis-ci.com/api/) can also help.
 
 # Submodules
 
