@@ -28,69 +28,114 @@
 extern NSString* const TKOpenSourceServer;
 extern NSString* const TKPrivateServer;
 
+/*!
+ * TravisKit client, wraps Travis CI API
+ */
 @interface TKClient : NSObject
 
+/*!
+ * Travis CI API access token
+ */
 @property (nonatomic, strong) NSString* accessToken;
 
+/*!
+ * YES when successfully authenticated
+ */
 @property (nonatomic, readonly) BOOL isAuthenticated;
 
+/*!
+ * Creates and initializes new Travis CI client with specified server
+ */
 + (instancetype)clientWithServer:(NSString *)server;
 
-//
-// Initialize
-//
-
+/*!
+ * Designated initializer
+ */
 - (id)initWithServer:(NSString *)server;
 
-//
-// Authenticate
-//
-
+/*!
+ * Authenticates Travis API with GitHub token, required for certain, user based requests
+ */
 - (void)authenticateWithGitHubToken:(NSString *)token success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
-//
-// Accounts
-//
-
+/*!
+ * Returns accounts available on Travis
+ */
 - (void)accountsWithSuccess:(void (^)(NSArray* accounts))success failure:(void (^)(NSError* error))failure;
 
+/*!
+ * Returns accounts filtered by admin parameter
+ */
 - (void)accountsWithAdmin:(BOOL)admin success:(void (^)(NSArray* accounts))success failure:(void (^)(NSError* error))failure;
 
-//
-// Annotations (experimental)
-//
-
+/*!
+ * Returns annotations for specific job
+ */
 - (void)annotationsWithJobId:(NSInteger)jobId success:(void (^)(NSArray* annotations))success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Creates new annotation for specific job
+ */
 - (void)createAnnotation:(TKAnnotation *)annotation withJobId:(NSInteger)jobId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
-//
-// Branches
-//
-
+/*!
+ * Returns branches for repository by ID
+ */
 - (void)branchesWithRepositoryId:(NSInteger)repositoryId success:(void (^)(NSArray* branches))success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Returns branches with repository slug
+ */
 - (void)branchesWithSlug:(NSString *)slug success:(void (^)(NSArray* branches))success failure:(void (^)(NSError* error))failure;
 
-//
-// Broadcasts
-//
-
+/*!
+ * Returns system wide broadcasts
+ */
 - (void)broadcastsWithSuccess:(void (^)(NSArray* broadcasts))success failure:(void (^)(NSError* error))failure;
 
-//
-// Builds
-//
+/*!
+ * Returns builds for repository IDs
+ */
 - (void)buildsWithIds:(NSArray *)ids success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Returns builds for repository IDs filtered by event type
+ */
 - (void)buildsWithIds:(NSArray *)ids eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
+/*!
+ * Returns builds for repository
+ */
 - (void)buildsWithRepositoryId:(NSInteger)repositoryId success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Returns builds for repository filtered by build number and event type
+ */
 - (void)buildsWithRepositoryId:(NSInteger)repositoryId buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
+/*!
+ * Returns builds for repository with slug
+ */
 - (void)buildsWithSlug:(NSString *)slug success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Returns builds for repository with slug filtered by build number and event type
+ */
 - (void)buildsWithSlug:(NSString *)slug buildNumber:(NSInteger)buildNumber afterNumber:(NSInteger)afterNumber eventType:(TKEventType)eventType success:(void (^)(TKBuildPayload* builds))success failure:(void (^)(NSError* error))failure;
 
+/*!
+ * Returns specific build
+ */
 - (void)buildWithId:(NSInteger)buildId success:(void (^)(TKBuild* build))success failure:(void (^)(NSError* error))failure;
 
+/*!
+ * Cancels currently running build
+ */
 - (void)cancelBuildWithId:(NSInteger)buildId success:(void (^)())success failure:(void (^)(NSError* error))failure;
+
+/*!
+ * Restarts specific build
+ */
 - (void)restartBuildWithId:(NSInteger)buildId success:(void (^)())success failure:(void (^)(NSError* error))failure;
 
 //
