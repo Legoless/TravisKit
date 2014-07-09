@@ -48,9 +48,9 @@ failure:^(NSError* error)
 
 See Demo project for more example calls and check out the header file for expressive documentation. [Travis CI API documentation](http://docs.travis-ci.com/api/) can also help.
 
-# Submodules
+# Subspecs
 
-TravisKit is divided into two submodules:
+TravisKit is divided into two Subspecs on CocoaPods:
 - Model contains all Travis CI models (`TravisKit/Model`) and routines to get them
 - Log contains all functionality to stream build logs in realtime (`TravisKit/Log`)
 
