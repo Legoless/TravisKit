@@ -26,6 +26,13 @@ NSString* const TKPrivateServer = @"https://api.travis-ci.com/";
     return [[self alloc] initWithServer:server];
 }
 
+- (void)setAccessToken:(NSString *)accessToken
+{
+    _accessToken = accessToken;
+    
+    [self setupAuthorizationToken]; 
+}
+
 - (BOOL)isAuthenticated
 {
     return ([self.accessToken length] > 0);
