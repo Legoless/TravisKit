@@ -19,6 +19,6 @@
 @property (nonatomic, strong) NSNumber* last_build_duration;
 @property (nonatomic, strong) NSDate* last_build_started_at;
 @property (nonatomic, strong) NSDate* last_build_finished_at;
-@property (nonatomic, strong) NSString* github_language;
+@property (nonatomic, strong) NSString<Optional>* github_language;
 
 @end
